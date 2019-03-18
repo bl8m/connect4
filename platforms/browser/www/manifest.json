@@ -1,0 +1,11 @@
+{
+  "background_color": "#FFF",
+  "display": "standalone",
+  "name": "Connect4",
+  "short_name": "Connect4",
+  "version": "it.bloomdesign.connect4",
+  "description": "Connect4 IOS App",
+  "author": "Bloom Design",
+  "icons": [],
+  "start_url": "index.html"
+}
