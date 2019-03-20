@@ -11,6 +11,7 @@
 					<span class="badge badge-primary">{{ config.id }}</span> 
 					<span class="badge badge-secondary">{{ current_page }}</span>
 					<span :class="is_connected?'badge badge-success':'badge badge-danger'">{{ is_connected?'Connected':'Disconnected' }}</span>
+					<span :class="has_native_storage?'badge badge-success':'badge badge-warning'">{{ has_native_storage?'Native Storage':'Local Storage' }}</span>
 				</div>
 				<div class="toolbar-log"><pre class="d-inline" v-html="toolbar_command"></pre></div>
 
@@ -79,6 +80,9 @@
 	import { mapState } from 'vuex';
 	import { mapGetters } from 'vuex';
 
+
+	const CONFIG_STORAGE_VAR = 'connect4_config';
+
 	export default {
 		name: 'App',
 		router,
@@ -102,23 +106,13 @@
 
 		// TODO caricare la configurazione locale
 
-		var config = {
-									endpoint : '192.168.1.6:9999',
-									id : 'Tablet1'
-								};
 
-
-
-		if(this.$route.params.endpoint != undefined){
-			config.endpoint = this.$route.params.endpoint;
-		}
-
-
-		this.$store.commit('setConfig', config)
+		
+		this.loadConfig();
 		//this.$store.commit('setEndpoint', this.config.endpoint);
 
 
-	},
+		},
 	methods: {
 
 		initConnection: function( activate_listener = true){
@@ -201,18 +195,61 @@
 			
 		},
 
+		loadConfig: function(){
+
+			console.log('loadConfig from ' + (this.has_native_storage?'NATIVE STORAGE':'LOCAL STORAGE') );
+
+			var config = {};
+			var storage_type = '';
+
+			if(this.has_native_storage){
+				storage_type = 'NATIVE STORAGE';
+				NativeStorage.getItem(CONFIG_STORAGE_VAR, function(obj){
+					config.id = obj.id;
+					config.endpoint = obj.endpoint;
+				});
+				console.log( config );
+			}
+			else{
+				storage_type = 'LOCAL STORAGE';
+				var config_saved_json = window.localStorage.getItem(CONFIG_STORAGE_VAR);
+				config = JSON.parse(config_saved_json);
+			}
+
+
+			if( config.id == undefined || config.endpoint == undefined ){
+				console.log( 'loadConfig: configurazione salvata NON TROVATA' );
+				config = {
+
+									endpoint : '192.168.1.6:9999',
+									id : 'Tablet1'
+								};	
+			}
+
+
+			// modifico l'endpoint se lo ricevo dalla url (solo web)
+			if(this.$route.params.endpoint != undefined){
+				config.endpoint = this.$route.params.endpoint;
+			}
+
+
+			this.$store.commit('setConfig', config)
+		},
+
 		saveConfig: function(){
 
-			// if(this.config.endpoint != this.tmp_config.endpoint){
-				
-			// 	this.closeConnection();
-			// 	this.initConnection();
+			var new_config =  _.clone(this.tmp_config, true);
+			this.$store.commit('setConfig', new_config );
 
-			// }
-
-			this.config =  _.clone(this.tmp_config, true);
-
-			// TODO : salvare la configurazione
+			if(this.has_native_storage){
+				console.log( 'saveConfig: salvo la configurazione in NATIVE STORAGE' );
+				NativeStorage.setItem(CONFIG_STORAGE_VAR, new_config);
+			}
+			else{
+				console.log( 'saveConfig: salvo la configurazione in LOCAL STORAGE' );
+				var new_config_json = JSON.stringify(new_config);
+				window.localStorage.setItem(CONFIG_STORAGE_VAR, new_config_json);
+			}
 
 			$('#modal_config').modal('hide');
 		}
@@ -237,7 +274,9 @@
 			return this.config.id 
 		},
 		
-
+		has_native_storage: function(){
+			return ( typeof NativeStorage !== 'undefined' ? true : false );
+		},
 		
 
 	},

@@ -9,6 +9,9 @@
   "installed_plugins": {
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "it.bloomdesign.connect4"
+    },
+    "cordova-plugin-nativestorage": {
+      "PACKAGE_NAME": "it.bloomdesign.connect4"
     }
   },
   "dependent_plugins": {}

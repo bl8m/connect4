@@ -19,6 +19,9 @@
         <param name="ios-package" value="CDVGestureHandler" />
         <param name="onload" value="true" />
     </feature>
+    <feature name="NativeStorage">
+        <param name="ios-package" value="NativeStorage" />
+    </feature>
     <name>Connect4</name>
     <description>
         Connect4 IOS App
