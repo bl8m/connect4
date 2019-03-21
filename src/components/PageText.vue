@@ -1,6 +1,6 @@
 <template>
-  <div class="app-page page-text d-flex justify-content-center align-items-center">
-    <div v-html="text_content" :style="'font-size: ' + font_size + 'px'"></div>
+  <div class="app-page page-text d-flex justify-content-center align-items-center" :style="bodyStyle">
+    <div v-html="text_content" :style="textStyle"></div>
   </div>
 </template>
 
@@ -26,6 +26,34 @@ export default {
       		return this.message.p.text;
       	else
       		return '';
+    },
+
+    textStyle: function(){
+      var style = '';
+
+      if(this.message != undefined){
+        if(this.message.p.fontSize != undefined){
+          style += 'font-size: ' + this.message.p.fontSize + 'px; ';
+        }
+
+        if(this.message.p.color != undefined){
+          style += 'color: ' + this.message.p.color + '; ';
+        }
+
+      }
+      return style;
+    },
+
+    bodyStyle: function(){
+      var style = '';
+
+      if(this.message != undefined){
+
+        if(this.message.p.backgroundColor != undefined){
+          style += 'background-color: ' + this.message.p.backgroundColor + '; ';
+        }
+      }
+      return style;
     },
 
     font_size: function(){

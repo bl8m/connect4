@@ -60,6 +60,13 @@
 							</div>
 						</div>
 
+
+						<div class="row mb-2" v-if="!is_connected">
+							<div class="col-sm-12">
+								<a href="#" @click.prevent="initConnection(false)" class="btn">Connetti</a>
+							</div>
+						</div>
+
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" @click="saveConfig">Salva</button>
@@ -291,7 +298,14 @@
 		},
 
 		feedback: function(new_value){
-			this.connection.send(JSON.stringify(new_value));
+
+			var message = {
+				c: 'feedback',
+				i: this.id,
+				p: new_value
+			};
+
+			this.connection.send(JSON.stringify(message));
 		},
 
 	}

@@ -1,6 +1,6 @@
 <template>
-  <div class="app-page page-image" :style="'background-image: url(' + background_image">
-    
+  <div class="app-page page-image">
+  <img :src="background_image" alt="">
   </div>
 </template>
 
@@ -13,8 +13,9 @@ export default {
   name: 'PageImage',
   mounted: function(){
   	var self = this;
+    console.log('Showing ' + self.message.p.image);
   	if(self.message.p != undefined){
-  		self.$store.commit('setFeedback', { c: 'feedback', p :{type: 'image_set', message: 'Image set: ' + self.message.p.image }});
+  		self.$store.commit('setFeedback',{type: 'image_set', message: 'Image set: ' + self.message.p.image });
   	}
   },
   data () {
@@ -25,6 +26,7 @@ export default {
   computed: {
     background_image: function(){
     	var image = './media/' + this.message.p.image;
+      console.log('Setting image ' + image);
       return image;
     },
     ...mapState({

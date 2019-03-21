@@ -1,6 +1,6 @@
 <template>
   <div class="app-page page-video d-flex align-items-center">
-    <video src="" id="video" preload="auto" class="w-100"></video>
+    <video src="" id="video" preload="auto" class="w-100" mute></video>
   </div>
 </template>
 
@@ -11,6 +11,12 @@ import { mapGetters } from 'vuex';
 
 export default {
   name: 'PageVideo',
+  created: function(){
+   
+    //this.setVideo();
+   
+
+  },
   mounted: function(){
    
   	this.setVideo();
@@ -19,7 +25,7 @@ export default {
   },
   data () {
     return {
-      //video_path: null,
+      video_notification: false
     }
   },
   computed: {
@@ -43,13 +49,8 @@ export default {
   watch: {
   	video_action: function(new_value){
   		if(new_value == 'load'){
-  	// 		this.video_path = './media/' + this.message.p.video;
-
-  	// 		var vid = document.getElementById('video');
-  	// 		vid.addEventListener("canplaythrough", function() {
-  	// 			console.log('Ready to Play');
-			// }, false);
-			this.setVideo();
+  	
+			 this.setVideo();
   		}
   		else if(new_value == 'play'){	
   			var vid = document.getElementById('video');
@@ -64,16 +65,41 @@ export default {
   methods: {
   	setVideo: function(){
   		// this.video_path = './media/' + this.message.p.video;
+      console.log('Setting video ' + './media/' + this.message.p.video);
   		var self = this;
 
-		var vid = document.getElementById('video');
-		vid.src = './media/' + this.message.p.video;
-		vid.addEventListener("canplaythrough", function() {
-			console.log('Ready to Play');
-			self.$store.commit('setFeedback', { c: 'feedback', p :{type: 'video_ready', message: 'Video is ready: ' + self.message.p.video }});
+		  var vid = document.getElementById('video');
 
-		}, false);
+
+
+		  
+		  vid.addEventListener("canplaythrough canplay loadedmetadata", function() {
+        if( !self.video_notification ){
+            self.video_notification = true;
+			     console.log('Ready to Play');
+			     self.$store.commit('setFeedback', {type: 'video_ready', message: 'Video is ready (event)'} );
+         }
+
+		  }, false);
+
+
+      vid.src = './media/' + this.message.p.video;
+
+
+      if(this.message.p.fakePreload == 1){
+        vid.onplay = function() {
+          vid.pause();
+        };
+        vid.play();
+
+        
+        self.$store.commit('setFeedback', {type: 'video_ready', message: 'Video is ready (fake preload)'} );
+      }
   	}
+
+
+
+
   }
 }
 </script>
