@@ -74,11 +74,11 @@ export default {
 
 		  
 		  vid.addEventListener("canplaythrough canplay loadedmetadata", function() {
-        if( !self.video_notification ){
+        
             self.video_notification = true;
 			     console.log('Ready to Play');
 			     self.$store.commit('setFeedback', {type: 'video_ready', message: 'Video is ready (event)'} );
-         }
+        
 
 		  }, false);
 
@@ -87,15 +87,23 @@ export default {
 
 
       if(this.message.p.fakePreload == 1){
-        vid.onplay = function() {
-          vid.pause();
-        };
-        vid.play();
-
         
+        vid.addEventListener('play', this.handlePlay);
+
+        const playPromise = vid.play();
+        if (playPromise !== null){
+            playPromise.catch((e) => { console.log(e.message);  })
+        }
         self.$store.commit('setFeedback', {type: 'video_ready', message: 'Video is ready (fake preload)'} );
       }
-  	}
+  	},
+
+    handlePlay: function(){
+      console.log( 'handlePlay');
+      var vid = document.getElementById('video');
+      vid.pause();
+      vid.removeEventListener('play', this.handlePlay);
+    },
 
 
 

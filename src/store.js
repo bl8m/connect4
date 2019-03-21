@@ -4,7 +4,7 @@ export default {
   state: {
     // endpoint: null,
 
-    
+    is_connected: false,
     config: {
           id: null,
           endpoint: null,
@@ -20,6 +20,11 @@ export default {
     // setId: function(state, id){
     //   state.config.id = id;
     // },
+
+    setIsConnected: function(state, is_connected){
+      state.is_connected = is_connected;
+    },
+
     setConfig: function(state, config){
       state.config = config;
     },

@@ -104,7 +104,7 @@
 
 				current_page: '',
 
-				is_connected: false,
+				// is_connected: false,
 
 
 			}
@@ -133,14 +133,16 @@
 					this.current_page = 'PageHome';
 					router.push({ name: 'PageHome'});
 
-					this.is_connected = true;
+					//this.is_connected = true;
+					this.$store.commit('setIsConnected', true);
 				}
 
 				this.connection.onclose = () => {
 					this.current_page = 'PageHome';
 					router.push({ name: 'PageHome'});
 
-					this.is_connected = false;
+					//this.is_connected = false;
+					this.$store.commit('setIsConnected', false);
 
 				}
 
@@ -268,6 +270,7 @@
 
 		...mapState({
 			
+			is_connected: state => state.is_connected,
 			config: state => state.config,
 			feedback: state => state.feedback,
 		}),
